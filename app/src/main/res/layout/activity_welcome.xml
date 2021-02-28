@@ -4,13 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".WelcomeActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Welcome to Lapit Chat App"
+        android:layout_width="189dp"
+        android:layout_height="63dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="258dp"
+        android:text="@string/welcome_to_lapit_chat_app"
+        android:gravity="center"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -18,12 +22,26 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/welcome_reg_btn"
-        android:layout_width="wrap_content"
+        android:id="@+id/welcome_login_btn"
+        android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="249dp"
-        android:text="@string/need_a_new_account" />
+        android:textColor="@color/white"
+        android:backgroundTint="@color/colorAccent"
+        android:layout_marginBottom="182dp"
+        android:text="Already have an account ?" />
+
+    <Button
+        android:id="@+id/welcome_reg_btn"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="122dp"
+        android:backgroundTint="@color/white"
+        android:text="@string/need_a_new_account"
+        android:textColor="@color/colorPrimary" />
+
 
 </RelativeLayout>
