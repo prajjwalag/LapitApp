@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "707032557699",
+    "project_id": "lapit-app-bac8d",
+    "storage_bucket": "lapit-app-bac8d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707032557699:android:a26f7cbb3feb6d2c1a93b6",
+        "android_client_info": {
+          "package_name": "com.prajjwal.lapitapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707032557699-fsu1129mriqrg0pu64kb4ob2va2s12je.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8FeEe5tGj2zCJoXiErWv59xOGVCVcKAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707032557699-fsu1129mriqrg0pu64kb4ob2va2s12je.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
