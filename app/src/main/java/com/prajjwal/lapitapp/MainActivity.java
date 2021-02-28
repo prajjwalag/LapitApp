@@ -3,12 +3,15 @@ package com.prajjwal.lapitapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -16,6 +19,11 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private Toolbar mToolbar;
+
+    private ViewPager mViewPager;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    private TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +35,15 @@ public class MainActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Lapit Chat");
+
+        mViewPager = (ViewPager) findViewById(R.id.main_tabPager);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
+        mTabLayout.setTabTextColors(Color.parseColor("#FF5521"), Color.parseColor("#FFFFFF"));
     }
 
     public void onStart() {
