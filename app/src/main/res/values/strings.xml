@@ -15,4 +15,6 @@
     <string name="hi_there_i_m_using_lapit_chat_app">Hi there, I am using Lapit Chat App</string>
     <string name="change_image">Change Image</string>
     <string name="change_status">Change Status</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="your_status">Your Status</string>
 </resources>
