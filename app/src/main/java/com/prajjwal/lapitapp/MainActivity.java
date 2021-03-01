@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.setTabTextColors(Color.parseColor("#FF5521"), Color.parseColor("#FFFFFF"));
+        mTabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF5521"));
     }
 
     public void onStart() {
@@ -77,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.main_logout_btn) {
             FirebaseAuth.getInstance().signOut();
             sendToStart();
+        }
+        if(item.getItemId()== R.id.main_settings_btn) {
+            Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(settingsIntent);
         }
 
         return true;
