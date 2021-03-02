@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -86,7 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                 mName.setText(name);
                 mStatus.setText(status);
-                Picasso.with(SettingsActivity.this).load(image).into(mDisplayImage);
+                Picasso.get().load(image).into(mDisplayImage);
             }
 
             @Override
@@ -155,14 +156,19 @@ public class SettingsActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                         if (task.isSuccessful()) {
-                            String download_url = task.getResult().getStorage().getDownloadUrl().toString();
-                            mUserDatabase.child("image").setValue(download_url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()) {
-                                        mProgressDialog.dismiss();
-                                        Toast.makeText(SettingsActivity.this, "Success Uploading.", Toast.LENGTH_LONG).show();
-                                    }
+                                public void onSuccess(Uri uri) {
+                                    String download_url = uri.toString();
+                                    mUserDatabase.child("image").setValue(download_url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()) {
+                                                mProgressDialog.dismiss();
+                                                Toast.makeText(SettingsActivity.this, "Success Uploading.", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
                                 }
                             });
                         }
