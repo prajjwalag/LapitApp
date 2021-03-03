@@ -17,4 +17,5 @@
     <string name="change_status">Change Status</string>
     <string name="save_changes">Save Changes</string>
     <string name="your_status">Your Status</string>
+    <string name="user_default_status">User Default Status</string>
 </resources>
