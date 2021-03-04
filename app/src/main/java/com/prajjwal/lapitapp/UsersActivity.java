@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,11 +59,22 @@ public class UsersActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull UsersViewHolder holder, int position, @NonNull Users model) {
                 holder.userName.setText(model.getName());
                 holder.userStatus.setText(model.getStatus());
-                if(model.getImage().equals("default")) {
+                if(model.getThumb_image().equals("default")) {
                     Picasso.get().load(R.drawable.avatar).into(holder.userImage);
                 } else {
-                    Picasso.get().load(model.getImage()).into(holder.userImage);
+                    Picasso.get().load(model.getThumb_image()).into(holder.userImage);
                 }
+
+                String user_id = getRef(position).getKey();
+
+                UsersViewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent profileIntent = new Intent(UsersActivity.this, ProfileActivity.class);
+                        profileIntent.putExtra("user_id", user_id);
+                        startActivity(profileIntent);
+                    }
+                });
             }
 
             @NonNull
@@ -78,7 +90,9 @@ public class UsersActivity extends AppCompatActivity {
 
     }
 
-    public class UsersViewHolder extends RecyclerView.ViewHolder {
+    public static class UsersViewHolder extends RecyclerView.ViewHolder {
+
+        static View mView;
 
         TextView userName, userStatus;
         CircleImageView userImage;
@@ -88,6 +102,7 @@ public class UsersActivity extends AppCompatActivity {
             userName = itemView.findViewById(R.id.user_single_name);
             userStatus = itemView.findViewById(R.id.user_single_status);
             userImage = itemView.findViewById(R.id.user_single_image);
+            mView=itemView;
         }
     }
 }
