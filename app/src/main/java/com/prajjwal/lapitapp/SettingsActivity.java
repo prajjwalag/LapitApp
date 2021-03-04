@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,9 +35,13 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -87,7 +93,9 @@ public class SettingsActivity extends AppCompatActivity {
 
                 mName.setText(name);
                 mStatus.setText(status);
-                Picasso.get().load(image).into(mDisplayImage);
+                if(!image.equals("default")) {
+                    Picasso.get().load(image).placeholder(R.drawable.avatar).into(mDisplayImage);
+                }
             }
 
             @Override
@@ -148,9 +156,26 @@ public class SettingsActivity extends AppCompatActivity {
 
                 Uri resultUri = result.getUri();
 
-                String current_user_id = mCurrentUser.getUid(); //getting user id for storing image name
-                StorageReference filepath = mImageStorage.child("profile_images").child(current_user_id + ".jpg");
+                File thumb_filePath = new File(resultUri.getPath());
 
+                String current_user_id = mCurrentUser.getUid(); //getting user id for storing image name
+
+                Bitmap thumb_bitmap = null;
+
+                try {
+                    thumb_bitmap = new Compressor(this)
+                            .setMaxWidth(200)
+                            .setMaxHeight(200)
+                            .setQuality(75) .compressToBitmap(thumb_filePath);
+                } catch (IOException e)
+                { e.printStackTrace(); }
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                thumb_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] thumb_byte = baos.toByteArray();
+
+                StorageReference filepath = mImageStorage.child("profile_images").child(current_user_id + ".jpg");
+                StorageReference thumb_filepath = mImageStorage.child("profile_images").child("thumbs").child(current_user_id + ".jpg");
 
                 filepath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -160,15 +185,46 @@ public class SettingsActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     String download_url = uri.toString();
-                                    mUserDatabase.child("image").setValue(download_url).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                    UploadTask uploadTask = thumb_filepath.putBytes(thumb_byte);
+                                    uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                         @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
+                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
                                             if(task.isSuccessful()) {
+
+                                                uploadTask.getResult().getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                    @Override
+                                                    public void onSuccess(Uri thumb_uri) {
+                                                        String thumb_downloadUrl = thumb_uri.toString();
+                                                        mUserDatabase.child("thumb_image").setValue(thumb_downloadUrl).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                Toast.makeText(SettingsActivity.this, "Successfully uploaded thumbnail", Toast.LENGTH_LONG).show();
+                                                            }
+                                                        });
+                                                    }
+                                                });
+
+                                                mUserDatabase.child("image").setValue(download_url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if(task.isSuccessful()) {
+                                                            mProgressDialog.dismiss();
+                                                            Toast.makeText(SettingsActivity.this, "Success Uploading.", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    }
+                                                });
+                                            } else
+                                            {
+                                                Toast.makeText(SettingsActivity.this, "Error in Uploading Thumbnail.", Toast.LENGTH_LONG).show();
                                                 mProgressDialog.dismiss();
-                                                Toast.makeText(SettingsActivity.this, "Success Uploading.", Toast.LENGTH_LONG).show();
                                             }
+
                                         }
                                     });
+
+
                                 }
                             });
                         }
