@@ -11,4 +11,5 @@
     <color name="colorPrimary">#673BB7</color>
     <color name="colorPrimaryDark">#512DA7</color>
     <color name="colorAccent">#FF5521</color>
+    <color name="colorProfileBackground">#2A2A2A</color>
 </resources>

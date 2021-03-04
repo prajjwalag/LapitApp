@@ -18,4 +18,8 @@
     <string name="save_changes">Save Changes</string>
     <string name="your_status">Your Status</string>
     <string name="user_default_status">User Default Status</string>
+    <string name="friends_count">Freinds Count</string>
+    <string name="mutual_friends">Mutual Friends</string>
+    <string name="send_friend_request">Send Friend Request</string>
+    <string name="decline_friend_request">Decline Friend Request</string>
 </resources>
