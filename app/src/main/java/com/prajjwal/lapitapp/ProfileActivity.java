@@ -26,6 +26,9 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 public class ProfileActivity extends AppCompatActivity {
 
     private ImageView mProfileImage;
@@ -34,6 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private DatabaseReference mUserDatabase;
     private DatabaseReference mFriendRequestDatabase;
+    private DatabaseReference mFriendDatabase;
     private FirebaseUser  mCurrentUser;
 
     private ProgressDialog mProgressDialog;
@@ -64,6 +68,8 @@ public class ProfileActivity extends AppCompatActivity {
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
         mFriendRequestDatabase = FirebaseDatabase.getInstance().getReference().child("Friend_Request");
+        mFriendDatabase = FirebaseDatabase.getInstance().getReference().child("Friends");
+
         mUserDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -131,7 +137,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Void aVoid) {
 
-                                        mProfileSendReqBtn.setEnabled(true);
+
                                         mCurrentStatus = 1;
                                         mProfileSendReqBtn.setText("Cancel Friend Request");
                                         Toast.makeText(ProfileActivity.this, "Request Sent Successfully.", Toast.LENGTH_SHORT).show();
@@ -141,7 +147,7 @@ public class ProfileActivity extends AppCompatActivity {
                             else {
                                 Toast.makeText(ProfileActivity.this, "Failed Sending Request.", Toast.LENGTH_SHORT).show();
                             }
-
+                            mProfileSendReqBtn.setEnabled(true);
                         }
                     });
                 }
@@ -160,6 +166,33 @@ public class ProfileActivity extends AppCompatActivity {
                                     mProfileSendReqBtn.setEnabled(true);
                                     mCurrentStatus = 0;
                                     mProfileSendReqBtn.setText("Send Friend Request");
+
+                                }
+                            });
+                        }
+                    });
+                }
+
+                //Request Received State
+                if(mCurrentStatus == 2) {
+                    String currentDate = DateFormat.getDateTimeInstance().format(new Date());
+                    mFriendDatabase.child(mCurrentUser.getUid()).child(user_id).setValue(currentDate).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            mFriendDatabase.child(user_id).child(mCurrentUser.getUid()).setValue(currentDate).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+                                    mFriendRequestDatabase.child(user_id).child(mCurrentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                            mProfileSendReqBtn.setEnabled(true);
+                                            mCurrentStatus = 3;
+                                            mProfileSendReqBtn.setText("Unfriend");
+
+                                        }
+                                    });
 
                                 }
                             });
